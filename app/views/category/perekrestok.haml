@@ -180,8 +180,9 @@
                         :javascript
                           console.log("Error (dadcbf6b) from HAML: #{e}")
                       %meta{:content => image_url, :itemprop => 'image'}/
-                      - if percent_discount > 0
-                        .discount="-#{percent_discount}%"
+                      -# Скидки временно скрыты
+                      -#                       - if percent_discount > 0
+                      -#                         .discount="-#{percent_discount}%"
                       = complex_product_image_schema(product, image_url)
                       %img{alt: "#{product.header}", src: image_url }
                       .info
@@ -195,14 +196,15 @@
                             %link{:href => "http://schema.org/InStock", :itemprop => "availability"}/
                             %meta{:content => "http://schema.org/NewCondition", :itemprop => "itemCondition"}/
                             %meta.currprice{:content => price, :itemprop => 'price'}
-                          .price{class: percent_discount != 0 ? 'discounted' : ''}
+                          .price
                             %span.price-prefix от 
                             #{price}
                             %i.fa.fa-rub{"aria-hidden" => ""}
-                            - if old_spice > price
-                              %p.old-spice
-                                #{old_spice}
-                                %i.fa.fa-rub{"aria-hidden" => ""}
+                            -# Старая цена временно скрыта
+                            -#                             - if old_spice > price
+                            -#                               %p.old-spice
+                            -#                                 #{old_spice}
+                            -#                                 %i.fa.fa-rub{"aria-hidden" => ""}
                 .carousel-cell.last
                   .wrapper
                     - # sample = x.sample(4)
@@ -374,7 +376,7 @@
     border-radius: 12px;
     background: rgb(213, 244, 218);
   }
-  #MATRIX .price.discounted { color: red; }
+  /* #MATRIX .price.discounted { color: red; } */
   #wr .price .fa-rub { font-size: 18px; }
   #wr .old-spice .fa-rub { font-size: 13px; }
   #wr a.header { padding: 0 12px; }
@@ -400,15 +402,16 @@
     transform: scale(1.012);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
-  #MATRIX .discount {
-    position: absolute; top: 4px; left: 4px;
-    margin: 4px;
-    background-color: #a8f03e;
-    border-radius: 8px;
-    display: inline-block;
-    padding: 4px 10px;
-    font-weight: bolder;
-  }
+  /* Скидки временно скрыты
+  /*   #MATRIX .discount {
+  /*     position: absolute; top: 4px; left: 4px;
+  /*     margin: 4px;
+  /*     background-color: #a8f03e;
+  /*     border-radius: 8px;
+  /*     display: inline-block;
+  /*     padding: 4px 10px;
+  /*     font-weight: bolder;
+  /*   } */
   #MATRIX .carousel-cell {
     margin-right: 3px; margin-left: 0; width: 33%; height: auto;
   }
