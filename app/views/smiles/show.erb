@@ -27,16 +27,27 @@ end
   prdct_id = x['id'].to_i;
   cmplct_title = x['complect'];
   prdct = Product.find_by_id(prdct_id)
-  if Complect.find_by_title(cmplct_title)
+  if prdct && Complect.find_by_title(cmplct_title)
+    cmplct_price = prdct.get_cmplct_price_by_title(cmplct_title, @subdomain.discount_pool_id)
+    cmplct_header = Complect.find_by_title(cmplct_title).header
+  elsif prdct && prdct.complects.any?
+    cmplct_title = prdct.complects[0].title
     cmplct_price = prdct.get_cmplct_price_by_title(cmplct_title, @subdomain.discount_pool_id)
     cmplct_header = Complect.find_by_title(cmplct_title).header
   else
-    cmplct_title = Product.find(prdct_id).complects[0].title
-    cmplct_price = prdct.get_cmplct_price_by_title(cmplct_title, @subdomain.discount_pool_id)
-    cmplct_header = Complect.find_by_title(cmplct_title).header
+    # Fallback values when product is not found
+    prdct = nil
+    cmplct_title = 'standard'
+    cmplct_price = 0
+    cmplct_header = 'Букет цветов'
   end
 rescue StandardError => e
-  puts 'Oh, shit!'
+  # Set fallback values on error
+  prdct = nil
+  prdct_id = 0
+  cmplct_title = 'standard'
+  cmplct_price = 0
+  cmplct_header = 'Букет цветов'
 end %>
 
 <script type="application/ld+json">
@@ -56,8 +67,8 @@ end %>
     },
     "itemReviewed": {
       "@type": "Product",
-      "name": "<%=prdct.header%>",
-      "image": "<%=prdct.thumb_image(true)%>"<%#"sku": "2864"%>
+      "name": "<%=prdct ? prdct.header : cmplct_header%>",
+      "image": "<%=prdct ? prdct.thumb_image(true) : '/images/default-product.jpg'%>"<%#"sku": "2864"%>
     }
   }
 </script>
@@ -105,16 +116,17 @@ end %>
 
 <%
   # Формирование данных для WebPage разметки
-  webpage_name = "Улыбки получателей – #{prdct.header}"
+  product_name = prdct ? prdct.header : cmplct_header
+  webpage_name = "Улыбки получателей – #{product_name}"
   
   # Формирование описания
   customer_name = @post.customer_name
   date_str = @post.created_at.strftime('%d %B %Y').gsub('January', 'января').gsub('February', 'февраля').gsub('March', 'марта').gsub('April', 'апреля').gsub('May', 'мая').gsub('June', 'июня').gsub('July', 'июля').gsub('August', 'августа').gsub('September', 'сентября').gsub('October', 'октября').gsub('November', 'ноября').gsub('December', 'декабря')
   
   if customer_name && customer_name.present? && customer_name.strip != 'Покупатель'
-    webpage_description = "Фото получателя букета «#{prdct.header}» от клиента #{customer_name} от #{date_str}"
+    webpage_description = "Фото получателя букета «#{product_name}» от клиента #{customer_name} от #{date_str}"
   else
-    webpage_description = "Фото получателя букета «#{prdct.header}» от #{date_str}"
+    webpage_description = "Фото получателя букета «#{product_name}» от #{date_str}"
   end
 %>
 
@@ -158,12 +170,13 @@ end %>
                      
                      # Приоритет: customer_name -> eight_digit_id
                      customer_name = @post.customer_name
+                     product_name_for_alt = prdct ? prdct.header : cmplct_header
                      if customer_name && customer_name.present? && customer_name.strip != 'Покупатель'
-                       "Фото букета «#{prdct.header}» от клиента #{customer_name}"
+                       "Фото букета «#{product_name_for_alt}» от клиента #{customer_name}"
                      elsif order_eight_digit_id
-                       "Фото букета «#{prdct.header}». Заказ № #{order_eight_digit_id}"
+                       "Фото букета «#{product_name_for_alt}». Заказ № #{order_eight_digit_id}"
                      else
-                       "Фото букета «#{prdct.header}»"
+                       "Фото букета «#{product_name_for_alt}»"
                      end
                    end
       %>

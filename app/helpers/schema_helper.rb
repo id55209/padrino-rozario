@@ -89,23 +89,23 @@ Rozario::App.helpers do
     end
   end
   
-  # Generate schema for smile/review images
+  # Generate schema for smile/review images with safe handling
   def smile_image_schema(smile, alt_text = nil)
-    return "" unless smile.respond_to?(:images_identifier)
+    return "" unless smile && smile.respond_to?(:images_identifier) && present?(smile.images_identifier)
     
     begin
       image_path = "/uploads/smiles/#{smile.images_identifier}"
       image_url = full_image_url(image_path)
       return "" if blank?(image_url)
       
-      # Use provided alt_text or construct one
-      name = alt_text || (smile.respond_to?(:title) ? smile.title : "Отзыв покупателя")
+      # Use provided alt_text or construct safe fallback
+      name = alt_text || (smile.respond_to?(:title) && present?(smile.title) ? smile.title : "Отзыв покупателя")
       description = alt_text || name
       
       options = {
         name: name,
         description: description,
-        date_published: smile.respond_to?(:created_at) ? smile.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        date_published: (smile.respond_to?(:created_at) && smile.created_at) ? smile.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
         author: "Rozario Flowers"
       }
       
