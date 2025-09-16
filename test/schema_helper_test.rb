@@ -169,4 +169,15 @@ class SchemaHelperTest < Minitest::Test
     assert_equal "https://example.com/image.jpg", parsed["contentUrl"]
     assert_equal "Rozario Flowers", parsed["author"]
   end
+  
+  def test_handles_missing_methods_gracefully
+    broken_product = Object.new
+    result = @helper_with_subdomain.product_image_schema(broken_product, true)
+    assert_equal "", result
+  end
+  
+  def test_handles_nil_values_gracefully
+    result = @helper_with_subdomain.product_image_schema(nil, true)
+    assert_equal "", result
+  end
 end
