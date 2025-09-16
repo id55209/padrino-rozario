@@ -4,4 +4,5 @@
 %h2= @album.title
 #photos-list
 	- @album.photos.each_with_index do |photo, index|
+		= photo_image_schema(photo)
 		=link_to image_tag(photo.image, :alt => photo.title), photo.image, :title => photo.title, :class => 'fancybox image', :rel => 'album'

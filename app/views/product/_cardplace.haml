@@ -28,13 +28,7 @@
 
         .col-md-12{ style: 'padding: 10px 10px 0 10px;'}
 
-          %div{:itemscope => true, :itemtype => 'http://schema.org/ImageObject'}
-            %span{src: product.thumb_image(true), :itemprop => 'contentUrl' }
-            %span{content: product.header, :itemprop => 'name' }
-            %span{content: '650', :itemprop => 'height' }
-            %span{content: '1315', :itemprop => 'width' }
-            %span{content: product.header, :itemprop => 'description' }
-            %meta{:content => "Rozarioflowers", :itemprop => 'author'}/
+          = product_image_schema(product, true)
 
       .row.hidden-sm.hidden-xs
         .col-xs-8.text-left{ style: "padding-left: 16px; padding-top: 24px; z-index: 11" }

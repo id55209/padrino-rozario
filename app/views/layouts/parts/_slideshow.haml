@@ -4,6 +4,7 @@
       #mainbnr{style: "max-width:900px"}
         #slides
           -@slideshow.slides.order('position').each do |slide|
+            = slide_image_schema(slide)
             -if !slide.uri.empty?
               =link_to (image_tag slide.image), url(slide.uri), rel: 'nofollow'
             -else

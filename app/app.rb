@@ -40,6 +40,7 @@ module Rozario
     register Padrino::Rendering
     register Padrino::Mailer
     register Padrino::Helpers
+    helpers SchemaHelper
     register Sinatra::SimpleNavigation
     register Padrino::Admin::AccessControl
     register WillPaginate::Sinatra
