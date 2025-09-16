@@ -10,10 +10,18 @@
 
 Создан модуль `app/helpers/schema_helper.rb`, который предоставляет следующие методы:
 
+**Основные методы:**
 - `generate_image_schema(image_url, options = {})` - базовый метод для генерации Schema.org разметки
 - `product_image_schema(product, mobile = false)` - генерация разметки для изображений продуктов
 - `photo_image_schema(photo)` - генерация разметки для фотографий в альбомах
 - `slide_image_schema(slide)` - генерация разметки для слайдов
+
+**Новые методы (добавлены в обновлении):**
+- `smile_image_schema(smile, alt_text = nil)` - для изображений отзывов/smiles
+- `category_image_schema(category)` - для изображений категорий
+- `product_modal_image_schema(product, angular_image_var = nil)` - для модальных окон продуктов
+- `complex_product_image_schema(product, image_url)` - для сложных изображений продуктов
+- `news_image_schema(news)` - для изображений новостей и статей
 
 ### Интегрированные места
 
@@ -30,6 +38,18 @@
 
 4. **Страницы отзывов** (`app/views/smiles/show.erb`)
    - Добавлена разметка для изображений продуктов в отзывах
+   - **Новое:** Главные изображения в блоке `.img-box` с разметкой `smile_image_schema`
+
+5. **Модальные окна продуктов** (`app/views/product/_item_modal.html.erb`)
+   - **Новое:** Добавлена разметка для главных изображений товаров в блоке `.itemImg`
+   - Поддерживает Angular переменные для динамических изображений
+
+6. **Страницы категорий** (`app/views/category/perekrestok.haml`)
+   - **Новое:** Разметка для изображений категорий в карусели
+   - **Новое:** Разметка для сложных изображений продуктов с динамическими URL
+
+7. **Блок "Статьи о цветах"** (`app/views/category/news/_latest_news.haml`)
+   - **Новое:** Разметка для изображений новостей и статей
 
 ## Генерируемая разметка
 
