@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require 'json'
+require 'ostruct'
 
 # Define CURRENT_DOMAIN constant for tests
 CURRENT_DOMAIN = 'rozarioflowers.ru' unless defined?(CURRENT_DOMAIN)
@@ -179,5 +180,26 @@ class SchemaHelperTest < Minitest::Test
   def test_handles_nil_values_gracefully
     result = @helper_with_subdomain.product_image_schema(nil, true)
     assert_equal "", result
+  end
+  
+  def test_smile_image_schema
+    smile = OpenStruct.new(images_identifier: "test.jpg", title: "Test Smile", created_at: Time.now)
+    result = @helper_with_subdomain.smile_image_schema(smile, "Test Alt Text")
+    assert_includes result, '"@type": "ImageObject"'
+    assert_includes result, '"name": "Test Alt Text"'
+  end
+  
+  def test_category_image_schema
+    category = OpenStruct.new(image: "/test.jpg", title: "Test Category", created_at: Time.now)
+    result = @helper_with_subdomain.category_image_schema(category)
+    assert_includes result, '"@type": "ImageObject"'
+    assert_includes result, '"name": "Test Category"'
+  end
+  
+  def test_product_modal_image_schema
+    product = MockProduct.new
+    result = @helper_with_subdomain.product_modal_image_schema(product, "image")
+    assert_includes result, '"@type": "ImageObject"'
+    assert_includes result, '"contentUrl": "{{ image }}"'
   end
 end

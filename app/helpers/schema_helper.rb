@@ -89,6 +89,135 @@ Rozario::App.helpers do
     end
   end
   
+  # Generate schema for smile/review images
+  def smile_image_schema(smile, alt_text = nil)
+    return "" unless smile.respond_to?(:images_identifier)
+    
+    begin
+      image_path = "/uploads/smiles/#{smile.images_identifier}"
+      image_url = full_image_url(image_path)
+      return "" if blank?(image_url)
+      
+      # Use provided alt_text or construct one
+      name = alt_text || (smile.respond_to?(:title) ? smile.title : "Отзыв покупателя")
+      description = alt_text || name
+      
+      options = {
+        name: name,
+        description: description,
+        date_published: smile.respond_to?(:created_at) ? smile.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        author: "Rozario Flowers"
+      }
+      
+      generate_image_schema(image_url, options)
+    rescue => e
+      # Log error but don't break the page
+      ""
+    end
+  end
+  
+  # Generate schema for category images
+  def category_image_schema(category)
+    return "" unless category.respond_to?(:image)
+    
+    begin
+      image_url = full_image_url(category.image)
+      return "" if blank?(image_url)
+      
+      options = {
+        name: category.respond_to?(:title) ? category.title : "Категория товаров",
+        description: category.respond_to?(:title) ? category.title : "Категория товаров",
+        date_published: category.respond_to?(:created_at) ? category.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        author: "Rozario Flowers"
+      }
+      
+      generate_image_schema(image_url, options)
+    rescue => e
+      # Log error but don't break the page
+      ""
+    end
+  end
+  
+  # Generate schema for product modal images (with Angular image URL)
+  def product_modal_image_schema(product, angular_image_var = nil)
+    return "" unless product
+    
+    begin
+      # For modal images, we might use Angular variables or product image
+      if angular_image_var
+        # Use the Angular variable as-is for contentUrl - it will be resolved on client side
+        image_url = "{{ #{angular_image_var} }}"
+      else
+        image_url = full_image_url(product.respond_to?(:thumb_image) ? product.thumb_image(false) : "")
+        return "" if blank?(image_url)
+      end
+      
+      options = {
+        name: product.respond_to?(:header) ? product.header : "Product Image",
+        description: (product.respond_to?(:alt) && present?(product.alt)) ? product.alt : (product.respond_to?(:header) ? product.header : "Product Image"),
+        date_published: product.respond_to?(:created_at) ? product.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        author: "Rozario Flowers"
+      }
+      
+      # For desktop images in modal
+      options[:width] = "900"
+      options[:height] = "650"
+      
+      generate_image_schema(image_url, options)
+    rescue => e
+      # Log error but don't break the page
+      ""
+    end
+  end
+  
+  # Generate schema for complex product images (from perekrestok template)
+  def complex_product_image_schema(product, image_url)
+    return "" unless product && present?(image_url)
+    
+    begin
+      full_url = full_image_url(image_url)
+      return "" if blank?(full_url)
+      
+      options = {
+        name: product.respond_to?(:header) ? product.header : "Product Image",
+        description: (product.respond_to?(:alt) && present?(product.alt)) ? product.alt : (product.respond_to?(:header) ? product.header : "Product Image"),
+        date_published: product.respond_to?(:created_at) ? product.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        author: "Rozario Flowers"
+      }
+      
+      # Standard product image dimensions
+      options[:width] = "650"
+      options[:height] = "650"
+      
+      generate_image_schema(full_url, options)
+    rescue => e
+      # Log error but don't break the page
+      ""
+    end
+  end
+  
+  # Generate schema for news/article images
+  def news_image_schema(news)
+    return "" unless news.respond_to?(:image)
+    
+    begin
+      image_url = full_image_url(news.image)
+      return "" if blank?(image_url)
+      
+      options = {
+        name: news.respond_to?(:title) ? news.title : "Новость",
+        description: news.respond_to?(:title) ? news.title : "Новость",
+        date_published: news.respond_to?(:created_at) ? news.created_at.strftime("%Y-%m-%d") : Date.current.strftime("%Y-%m-%d"),
+        author: "Rozario Flowers"
+      }
+      
+      generate_image_schema(image_url, options)
+    rescue => e
+      # Log error but don't break the page
+      ""
+    end
+  end
+  
   # Generate schema for slideshow slides
   def slide_image_schema(slide)
     return "" unless slide.respond_to?(:image)

@@ -92,9 +92,11 @@
             <div class="row">
             </div>
             <div class="itemImg visible-md visible-lg">
+              <%= product_modal_image_schema(@product, 'image') %>
               <img ng-src="{{ image }}" width="100%" alt="<%= @product.alt %>"/>
             </div>
             <div class="visible-sm visible-xs" style="position:relative;overflow:hidden;">
+              <%= product_modal_image_schema(@product, 'image') %>
               <img ng-src="{{ image }}" style="max-height: 100%;max-width:100%;" alt="<%= @product.alt %>"/>
             </div>
           </div>
