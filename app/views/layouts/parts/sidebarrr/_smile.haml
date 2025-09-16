@@ -1,0 +1,13 @@
+﻿%a{href: File.join('/smiles/', @post.slug.present? ?  @post.slug.to_s : @post.id.to_s), itemprop: "url", rel: 'nofollow'}
+  / %span = @post.title
+  - ext = File.extname(@post.images.current_path); base = File.basename(@post.images.current_path, ".*").to_s
+  - fname = base + '_tn' + ext
+  - File.file?('/var/www/rozarioflowers.ru/rozario/public/uploads/smiles/' + fname) ? fname : fname = File.basename(@post.images.current_path)
+  - imglnk = '/uploads/smiles/' + fname
+  %meta{:content => "Улыбки получателей #{fname}", :itemprop => 'name'}/
+  %meta{:content => "Фотография счастливой обладательницы красивого букета", :itemprop => 'description'}/
+  %img{ src: imglnk, style: 'width: 120px; border-radius: 2px;', :itemprop => 'contentUrl', alt: @post.alt, loading: "lazy" }
+  %meta{:content => "2017-09-25", :itemprop => 'datePublished'}/
+  %meta{:content => "256", :itemprop => 'width'}/
+  %meta{:content => "256", :itemprop => 'height'}/
+  %meta{:content => "Rozarioflowers", :itemprop => 'author'}/

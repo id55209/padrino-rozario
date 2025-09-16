@@ -1,0 +1,14 @@
+- comment.date.present? ? d = comment.date.strftime("%d.%m.%Y") : d = comment.created_at.strftime("%d.%m.%Y")
+%article{ style: 'padding: 8px 0;', :itemscope => "", :itemtype => "http://schema.org/Rating" }
+  %h3.name= comment.name
+  .date=d
+  .body{:itemprop => 'description'}!= comment.body
+  %div
+    %span.star-rating.mini{:content => comment.rating, :itemprop => "ratingValue"}
+      - rate = comment.rating
+      - (0...rate).each do |a|
+        %i
+    %span.star-rating.remainder.mini
+      - rmndr = 5 - rate
+      - (0...rmndr).each do |a|
+        %i

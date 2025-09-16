@@ -1,0 +1,76 @@
+- # encoding: utf-8
+- @title = "Отзывы клиентов | Доставка цветов №1 " + @subdomain.city
+
+/ see also
+/ https://github.com/ambethia/recaptcha
+/ https://github.com/ambethia/recaptcha/blob/master/demo/sinatra/server.rb
+
+%div.hidden-xs.hidden-sm{style:"height: 42px"}
+#comment-form
+  %h1{:style => "font-size: 20px;"}=@seo[:h1].html_safe
+  %h2 Оставьте Ваш отзыв
+  -form_tag url(:feedback, :submit), :method => 'post', :class => 'form comment', :id => 'FORM' do |f|
+    = flash_tag(:notice)
+    = flash_tag(:error)
+    %input{type: "hidden", name: "g-recaptcha-response"}
+    .row.a
+      .col-md-6.a
+        - field_set_tag do
+          = label_tag :name, :caption => 'Имя'
+          = text_field_tag :name, :value => params[:name], :required => '', :id => 'FORM_NAME'
+      .col-md-6.b
+        - field_set_tag do
+          = label_tag :email, :caption => 'Эл. почта'
+          = text_field_tag :email, :value => params[:email], :id => 'FORM_EMAIL'
+    .row.a2
+      .col-md-12
+        = partial("partials/snd-rating", :engine => :erb)
+    .row.b
+      .col-md-12
+        - field_set_tag do
+          = label_tag :msg, :caption => 'Ваш отзыв'
+          = text_area_tag :msg, :value => params[:msg], :required => '', :id => 'FORM_MSG'
+    .row.c
+      .col-md-12
+        - field_set_tag(:class => 'buttons') do
+          = submit_tag 'Отправить', :class => 'btn', :id => "SUBMIT"
+
+#comments= partial 'comment/comment', :collection => @comments
+
+:css
+  @media only screen and (max-width: 992px) {
+    .delivery-lg {
+      display: none !important;
+      #comment-form > h2 {margin: 24px 0 !important;}
+    }
+  }
+  span.star-rating { padding-top: 12px; }
+  
+  @media screen and (width <= 1024px) {
+    #sidebarrr {display: none;}
+  }
+
+:javascript
+  $('.feedback').css('display','none');
+  grecaptcha.ready(function() {
+    grecaptcha.execute('6LdUkAIqAAAAAPmW_r2jFaMvjMa8o-kelRM_nKKi', {action: 'submit'}).then(function(token) {
+      document.getElementsByName('g-recaptcha-response')[0].value = token;
+    });
+  });
+
+  // Сохранение данных формы в localStorage при отправке
+  document.getElementById('FORM').addEventListener('submit', function() {
+    var name = document.getElementById('FORM_NAME').value;
+    localStorage.setItem('name', name);
+    var email = document.getElementById('FORM_EMAIL').value;
+    localStorage.setItem('email', email);
+    var msg = document.getElementById('FORM_MSG').value;
+    localStorage.setItem('msg', msg);
+  });
+
+  // Восстановление данных формы из localStorage при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('name'))  { document.getElementById('FORM_NAME').value = localStorage.getItem('name'); }
+    if (localStorage.getItem('email')) { document.getElementById('FORM_EMAIL').value = localStorage.getItem('email'); }
+    if (localStorage.getItem('msg'))   { document.getElementById('FORM_MSG').value = localStorage.getItem('msg'); }
+  });
