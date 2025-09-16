@@ -202,4 +202,13 @@ class SchemaHelperTest < Minitest::Test
     assert_includes result, '"@type": "ImageObject"'
     assert_includes result, '"contentUrl": "{{ image }}"'
   end
+  
+  def test_json_format_no_html_entities
+    result = @helper.generate_image_schema("https://example.com/image.jpg")
+    # Should contain proper JSON quotes, not HTML entities
+    assert_includes result, '"@context"'
+    assert_includes result, '"@type"'
+    refute_includes result, '&quot;'
+    refute_includes result, '&amp;'
+  end
 end

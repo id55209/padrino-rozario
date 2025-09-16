@@ -30,7 +30,7 @@ Rozario::App.helpers do
     schema_data["author"] = options[:author] || "Rozario Flowers"
     
     content_tag(:script, 
-                JSON.pretty_generate(schema_data), 
+                JSON.pretty_generate(schema_data).html_safe, 
                 type: "application/ld+json")
   end
   
