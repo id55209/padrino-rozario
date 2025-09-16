@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 # Helper methods for generating Schema.org markup
-module SchemaHelper
+Rozario::App.helpers do
   
   # Generates Schema.org ImageObject JSON-LD script tag
   def generate_image_schema(image_url, options = {})

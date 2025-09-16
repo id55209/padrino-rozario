@@ -1,9 +1,32 @@
 require 'minitest/autorun'
 require 'json'
-require_relative '../app/helpers/schema_helper'
 
 # Define CURRENT_DOMAIN constant for tests
 CURRENT_DOMAIN = 'rozarioflowers.ru' unless defined?(CURRENT_DOMAIN)
+
+# Test helper class that will receive helper methods
+class TestHelper
+  def initialize(subdomain = nil)
+    @subdomain = subdomain
+  end
+  
+  # Mock content_tag method
+  def content_tag(tag, content, attributes = {})
+    attr_string = attributes.map { |k, v| "#{k}=\"#{v}\"" }.join(" ")
+    "<#{tag} #{attr_string}>#{content}</#{tag}>"
+  end
+end
+
+# Mock Rozario::App for testing
+module Rozario
+  class App
+    def self.helpers(&block)
+      TestHelper.class_eval(&block) if block_given?
+    end
+  end
+end
+
+require_relative '../app/helpers/schema_helper'
 
 # Mock classes to simulate the application models
 class MockProduct
@@ -41,18 +64,12 @@ class MockSlide
   end
 end
 
-# Test helper class that includes SchemaHelper
-class TestHelper
-  include SchemaHelper
+# Mock subdomain for testing
+class MockSubdomain
+  attr_accessor :url
   
-  def initialize(subdomain = nil)
-    @subdomain = subdomain
-  end
-  
-  # Mock content_tag method
-  def content_tag(tag, content, attributes = {})
-    attr_string = attributes.map { |k, v| "#{k}=\"#{v}\"" }.join(" ")
-    "<#{tag} #{attr_string}>#{content}</#{tag}>"
+  def initialize(url = "test")
+    @url = url
   end
 end
 
@@ -60,15 +77,6 @@ end
 class String
   def html_safe
     self
-  end
-end
-
-# Mock subdomain for testing
-class MockSubdomain
-  attr_accessor :url
-  
-  def initialize(url = "test")
-    @url = url
   end
 end
 
